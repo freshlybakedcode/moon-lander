@@ -4,9 +4,10 @@ var ctx = canvas.getContext('2d');
 let x = 155;
 let y = 30;
 let keyState = {};    
-const gravityStrength = 1.001;
+const gravityStrength = 1.002;
 const windStrength = 0.01;
-const rocketPower = 0.1;
+const rocketPower = 0.3;
+const terminalVelocity = 60;
 
 let speed = document.querySelector('.speed');
 let fuel = document.querySelector('.fuel');
@@ -26,7 +27,11 @@ const spaceship = {
 		ctx.fillRect(x - 6, y + 6, 12, 12);
 	},
 	applyGravity: function () {
-		y = y * gravityStrength;
+		if (y < terminalVelocity) {
+			y = y * gravityStrength;
+		} else {
+			y = y + (rocketPower / 2);
+		}
 	},
 	applyWind: function () {
 		x += windStrength;
@@ -47,7 +52,9 @@ window.addEventListener('keyup',function(e){
 
 var interval = setInterval(function () {
 	if (keyState[32]) {	//spacebar
-		y -= rocketPower;
+		if (y > 0.1) {
+			y -= rocketPower;
+		}
 		spaceship.fuel--;
 	}
 	if (keyState[37] || keyState[65]){	//left
